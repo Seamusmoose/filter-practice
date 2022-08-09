@@ -1,38 +1,47 @@
-import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useState } from "react";
 
 const initialSearchState = {
+  id: "",
   firstName: "",
   lastName: "",
+  username: "",
   address: [],
-  age: 0,
+  age: "",
   bank: [],
+  birthDate: "",
   company: [],
-  birthday: "",
   domain: "",
+  phone: "",
   email: "",
-  eyeColour: "",
+  eyeColor: "",
   gender: "",
-  hairColour: "",
-  university: "",
-  phoneNumber: "",
-  userName: "",
+  hair: "",
+  height: "",
   weight: "",
+  image: "",
+  ip: "",
+  password: "",
+  university: "",
 };
 
 const NameSearch = ({ userData }) => {
   const [characterData, setcharacterData] = useState(userData);
+  const [filteredCharacterData, setfilteredCharacterData] = useState([]);
   const [searchQuery, setsearchQuery] = useState(initialSearchState);
 
   const applyFilters = (e) => {
     e.preventDefault();
+    e.target.reset();
 
     const filteredQuery = characterData.filter(
-      (val) => val.firstName === searchQuery.firstName
+      ({ firstName, lastName, age }) =>
+        firstName === searchQuery.firstName ||
+        lastName === searchQuery.lastName ||
+        age.toString() === searchQuery.age.toString()
     );
-    setcharacterData(filteredQuery);
-  };
 
-  const handleResetFilters = () => {
+    setfilteredCharacterData(filteredQuery);
     setcharacterData(userData);
     setsearchQuery(initialSearchState);
   };
@@ -41,6 +50,8 @@ const NameSearch = ({ userData }) => {
     const { name, value } = e.target;
     setsearchQuery((prev) => ({ ...prev, [name]: value }));
   };
+
+  console.log(filteredCharacterData);
 
   return (
     <div>
@@ -157,15 +168,14 @@ const NameSearch = ({ userData }) => {
           value={characterData.weight}
         />
         <button type="submit">Search</button>
-        <button onClick={handleResetFilters} type="button">
-          Reset
-        </button>
       </form>
       <aside>
-        {characterData.map((i, key) => {
+        {filteredCharacterData.map((i, key) => {
           return (
             <ul key={key}>
               <li>{i.firstName}</li>
+              <li>{i.lastName}</li>
+              <Image src={`${i.image}`} height={200} width={200} />
             </ul>
           );
         })}
